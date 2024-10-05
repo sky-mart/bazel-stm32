@@ -1,0 +1,15 @@
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "CMSIS",
+    url = "https://github.com/ARM-software/CMSIS_5/archive/refs/tags/5.9.0.zip",
+    sha256 = "3d4bfaf8783c633149510d098630a9d2f273dc090ea5e807103cc9b7acbb6708",
+    build_file_content = """
+cc_library(
+    name = "Core",
+    hdrs = glob(["CMSIS_5-5.9.0/CMSIS/Core/Include/**/*.h"]),
+    strip_include_prefix = "CMSIS_5-5.9.0/CMSIS/Core/Include",
+    visibility = ["//visibility:public"],
+)
+"""
+)

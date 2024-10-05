@@ -1,0 +1,13 @@
+build:opt --copt=-O3
+
+build --conlyopt=-Wall
+build --conlyopt=-Wextra
+build --conlyopt=-Wpedantic
+build --conlyopt=-Wno-strict-prototypes
+build --conlyopt=-Wimplicit-fallthrough
+
+build --cxxopt=-Wall
+build --cxxopt=-Wextra
+build --cxxopt=-Wpedantic
+build --cxxopt=-Werror
+build --cxxopt=-Wimplicit-fallthrough
