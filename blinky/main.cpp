@@ -1,12 +1,12 @@
 #include "stm32f3xx.h"
 #include "stm32f3xx_hal.h"
 #include "stm32f3xx_hal_rcc.h"
-#include "bsp/led/led.h"
+#include "bsp/stm32f3discovery/board.h"
 #include "bsp/utility/utility.h"
 
 using namespace mart;
 
-Led led{GPIOE, GPIO_PIN_11};
+auto leds = stm32f3discovery::leds();
 
 int main()
 {
@@ -14,13 +14,14 @@ int main()
 
   __HAL_RCC_GPIOE_CLK_ENABLE();
 
-  led.init();
+  leds.init();
 
   while (true)
   {
-    led.set();
-    delay_ms(500U);
-    led.clear();
-    delay_ms(500U);
+    for (size_t i = 0; i < leds.count(); ++i)
+    {
+      leds[i].toggle();
+      delay_ms(250U);
+    }
   }
 }

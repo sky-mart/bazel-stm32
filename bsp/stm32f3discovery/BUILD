@@ -1,14 +1,12 @@
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
-    name = "led",
-    srcs = [
-        "led.cpp",
-        "led.h",
-        "led_array.h",
+    name = "stm32f3discovery",
+    hdrs = [
+        "board.h",
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "@stm32f3xx_hal",
+        "//bsp/led",
     ],
 )

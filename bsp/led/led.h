@@ -10,6 +10,7 @@ public:
   void init();
   void set();
   void clear();
+  void toggle();
 
 private:
   GPIO_TypeDef * const port_;

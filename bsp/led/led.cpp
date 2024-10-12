@@ -19,4 +19,6 @@ void Led::set() { HAL_GPIO_WritePin(port_, pin_, GPIO_PIN_SET); }
 
 void Led::clear() { HAL_GPIO_WritePin(port_, pin_, GPIO_PIN_RESET); }
 
+void Led::toggle() { HAL_GPIO_TogglePin(port_, pin_); }
+
 }

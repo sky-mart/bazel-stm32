@@ -11,6 +11,7 @@ stm32f3_binary(
     deps = [
         "//bsp/led",
         "//bsp/utility",
+        "//bsp/stm32f3discovery",
         "@cmsis_device_f3",
         "@cmsis//:core",
         "@stm32f3xx_hal",
