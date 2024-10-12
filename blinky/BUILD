@@ -8,8 +8,9 @@ stm32f3_binary(
         "main.cpp",
     ],
     deps = [
-        "@cmsis_device_f3//:cmsis_device_f3",
+        "@cmsis_device_f3",
         "@cmsis//:core",
+        "@stm32f3xx_hal",
     ],
 )
 
