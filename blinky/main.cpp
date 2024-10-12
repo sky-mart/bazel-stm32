@@ -2,13 +2,11 @@
 #include "stm32f3xx_hal.h"
 #include "stm32f3xx_hal_rcc.h"
 #include "bsp/led/led.h"
+#include "bsp/utility/utility.h"
 
-mart::Led led{GPIOE, GPIO_PIN_10};
+using namespace mart;
 
-void delay_ms(uint32_t ms)
-{
-  HAL_Delay(ms / uwTickFreq);
-}
+Led led{GPIOE, GPIO_PIN_11};
 
 int main()
 {
