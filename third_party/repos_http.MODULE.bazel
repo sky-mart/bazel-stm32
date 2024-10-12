@@ -33,4 +33,7 @@ http_archive(
     # sha256 = "d694d62381636ef74a76b03b2a19ca3daf190b87f589b88f948533f1c9db44f3",
     strip_prefix = "stm32f3xx_hal_driver-1.5.5",
     build_file = "//third_party/stm32f3xx_hal:BUILD",
+    patches = [
+        "//third_party/stm32f3xx_hal:rcc_gpioe.patch",
+    ],
 )

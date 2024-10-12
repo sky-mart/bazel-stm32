@@ -1,0 +1,18 @@
+diff --git a/Inc/stm32f3xx_hal_rcc.h b/Inc/stm32f3xx_hal_rcc.h
+index dff6b4f..9e9618a 100644
+--- Inc/stm32f3xx_hal_rcc.h
++++ Inc/stm32f3xx_hal_rcc.h
+@@ -707,6 +707,13 @@ typedef struct
+                                         tmpreg = READ_BIT(RCC->AHBENR, RCC_AHBENR_GPIODEN);\
+                                         UNUSED(tmpreg); \
+                                       } while(0U)
++#define __HAL_RCC_GPIOE_CLK_ENABLE()   do { \
++                                        __IO uint32_t tmpreg; \
++                                        SET_BIT(RCC->AHBENR, RCC_AHBENR_GPIOEEN);\
++                                        /* Delay after an RCC peripheral clock enabling */ \
++                                        tmpreg = READ_BIT(RCC->AHBENR, RCC_AHBENR_GPIOEEN);\
++                                        UNUSED(tmpreg); \
++                                      } while(0U)
+ #define __HAL_RCC_GPIOF_CLK_ENABLE()   do { \
+                                         __IO uint32_t tmpreg; \
+                                         SET_BIT(RCC->AHBENR, RCC_AHBENR_GPIOFEN);\
