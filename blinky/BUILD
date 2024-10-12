@@ -1,13 +1,15 @@
 load("@aspect_bazel_lib//lib:transitions.bzl", "platform_transition_filegroup")
-load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+load("@rules_cc//cc:defs.bzl", "cc_binary")
 load("//third_party/stm32:defs.bzl", "debug_stm32", "flash_stm32", "stm32f3_binary")
 
 stm32f3_binary(
     name = "blinky",
     srcs = [
+        "irq_handlers.cpp",
         "main.cpp",
     ],
     deps = [
+        "//bsp/led",
         "@cmsis_device_f3",
         "@cmsis//:core",
         "@stm32f3xx_hal",

@@ -1,9 +1,9 @@
 #include "stm32f3xx.h"
 #include "stm32f3xx_hal.h"
-#include "stm32f3xx_hal_gpio.h"
+#include "stm32f3xx_hal_rcc.h"
+#include "bsp/led/led.h"
 
-GPIO_TypeDef * const led_port = GPIOE;
-const auto led_pin = GPIO_PIN_8;
+mart::Led led{GPIOE, GPIO_PIN_10};
 
 void delay_ms(uint32_t ms)
 {
@@ -14,28 +14,15 @@ int main()
 {
   HAL_Init();
 
-  RCC->AHBENR |= RCC_AHBENR_GPIOEEN; // Clock
+  __HAL_RCC_GPIOE_CLK_ENABLE();
 
-  GPIO_InitTypeDef led_config;
-  led_config.Pin = led_pin;
-  led_config.Mode = GPIO_MODE_OUTPUT_PP;
-  led_config.Pull = GPIO_PULLDOWN;
-  led_config.Speed = GPIO_SPEED_FREQ_LOW;
-
-  HAL_GPIO_Init(led_port, &led_config);
+  led.init();
 
   while (true)
   {
-    HAL_GPIO_WritePin(led_port, led_pin, GPIO_PIN_SET);
+    led.set();
     delay_ms(500U);
-    HAL_GPIO_WritePin(led_port, led_pin, GPIO_PIN_RESET);
+    led.clear();
     delay_ms(500U);
   }
-}
-
-extern "C" {
-void SysTick_Handler(void)
-{
-  HAL_IncTick();
-}
 }
