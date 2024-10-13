@@ -8,7 +8,7 @@ public:
   Pin(GPIO_TypeDef* port, uint32_t pin);
 
   void init(uint32_t mode, uint32_t pull, uint32_t speed);
-  void init_as_led();
+  void init_as_led(uint32_t pull = GPIO_PULLDOWN);
   void init_alternate(uint32_t mode, uint32_t pull, uint32_t speed, uint32_t alternate);
   void set();
   void clear();

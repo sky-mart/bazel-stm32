@@ -15,9 +15,9 @@ void Pin::init(uint32_t mode, uint32_t pull, uint32_t speed)
   HAL_GPIO_Init(port_, &config);
 }
 
-void Pin::init_as_led()
+void Pin::init_as_led(uint32_t pull)
 {
-  init(GPIO_MODE_OUTPUT_PP, GPIO_PULLDOWN, GPIO_SPEED_FREQ_LOW);
+  init(GPIO_MODE_OUTPUT_PP, pull, GPIO_SPEED_FREQ_LOW);
 }
 
 void Pin::init_alternate(uint32_t mode, uint32_t pull, uint32_t speed,
