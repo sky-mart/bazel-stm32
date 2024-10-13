@@ -4,15 +4,33 @@ namespace mart {
 
 Pin::Pin(GPIO_TypeDef* port, uint32_t pin) : port_(port), pin_(pin) {}
 
-void Pin::init()
+void Pin::init(uint32_t mode, uint32_t pull, uint32_t speed)
 {
-  GPIO_InitTypeDef pin_config;
-  pin_config.Pin = pin_;
-  pin_config.Mode = GPIO_MODE_OUTPUT_PP;
-  pin_config.Pull = GPIO_PULLDOWN;
-  pin_config.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitTypeDef config;
+  config.Pin = pin_;
+  config.Mode = mode;
+  config.Pull = pull;
+  config.Speed = speed;
 
-  HAL_GPIO_Init(port_, &pin_config);
+  HAL_GPIO_Init(port_, &config);
+}
+
+void Pin::init_as_led()
+{
+  init(GPIO_MODE_OUTPUT_PP, GPIO_PULLDOWN, GPIO_SPEED_FREQ_LOW);
+}
+
+void Pin::init_alternate(uint32_t mode, uint32_t pull, uint32_t speed,
+                         uint32_t alternate)
+{
+  GPIO_InitTypeDef config;
+  config.Pin = pin_;
+  config.Mode = mode;
+  config.Pull = pull;
+  config.Speed = speed;
+  config.Alternate = alternate;
+
+  HAL_GPIO_Init(port_, &config);
 }
 
 void Pin::set() { HAL_GPIO_WritePin(port_, pin_, GPIO_PIN_SET); }

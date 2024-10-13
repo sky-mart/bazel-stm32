@@ -16,11 +16,11 @@ public:
     static_assert(sizeof...(leds) == N, "Number of leds must match the array size");
   }
 
-  void init()
+  void init_as_leds()
   {
     for (size_t i = 0; i < N; ++i)
     {
-      leds_[i].init();
+      leds_[i].init_as_led();
     }
   }
 

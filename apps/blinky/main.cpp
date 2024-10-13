@@ -14,7 +14,7 @@ int main()
 
   __HAL_RCC_GPIOE_CLK_ENABLE();
 
-  leds.init();
+  leds.init_as_leds();
 
   while (true)
   {
