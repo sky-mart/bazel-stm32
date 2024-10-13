@@ -12,6 +12,7 @@ stm32f3_binary(
         "//bsp/sdcard",
         "//bsp/stm32f3discovery",
         "//bsp/utility",
+        "//fatfs",
         "@stm32f3xx_hal",
     ],
 )

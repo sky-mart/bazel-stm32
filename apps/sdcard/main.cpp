@@ -2,11 +2,15 @@
 #include "bsp/sdcard/sdcard.h"
 #include "bsp/stm32f3discovery/gyroscope.h"
 #include "bsp/utility/utility.h"
+#include "ff.h"
 
 #include <cstdio>
 #include <cstring>
 
 using namespace mart;
+
+Sdcard sdcard{SPI1, Pin{GPIOE, GPIO_PIN_5}};
+FATFS fs;
 
 void error_handler(void)
 {
@@ -30,15 +34,21 @@ int main()
   stm32f3discovery::Gyroscope gyro;
   gyro.unselect();
 
-  Sdcard sdcard{SPI1, Pin{GPIOE, GPIO_PIN_5}};
+  // Sdcard sdcard{SPI1, Pin{GPIOE, GPIO_PIN_5}};
 
-  int res = sdcard.init(Pin{GPIOA, GPIO_PIN_5}, Pin{GPIOA, GPIO_PIN_6}, Pin{GPIOA, GPIO_PIN_7}, GPIO_AF5_SPI1);
-  if (res < 0)
+  const int sdcard_res = sdcard.init(Pin{GPIOA, GPIO_PIN_5}, Pin{GPIOA, GPIO_PIN_6}, Pin{GPIOA, GPIO_PIN_7}, GPIO_AF5_SPI1);
+  if (sdcard_res < 0)
   {
     error_handler();
   }
 
-  uint32_t blocks_number;
+  const FRESULT fat_res = f_mount(&fs, "", 0);
+  if(fat_res != FR_OK)
+  {
+    error_handler();
+  }
+
+  /*uint32_t blocks_number;
   res = sdcard.get_blocks_number(&blocks_number);
   if (res < 0)
   {
@@ -111,7 +121,7 @@ int main()
   if (res < 0)
   {
     error_handler();
-  }
+  }*/
 
   while (true)
   {
