@@ -30,7 +30,6 @@ http_archive(
     name = "stm32f3xx_hal",
     url = "https://github.com/STMicroelectronics/stm32f3xx_hal_driver/archive/refs/tags/v1.5.5.zip",
     sha256 = "2ab773dc014e3b881be5ca04fa241c25c835c4c9429f796ea09c98142f23a3a4",
-    # sha256 = "d694d62381636ef74a76b03b2a19ca3daf190b87f589b88f948533f1c9db44f3",
     strip_prefix = "stm32f3xx_hal_driver-1.5.5",
     build_file = "//third_party/stm32f3xx_hal:BUILD",
     patches = [
