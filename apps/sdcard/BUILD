@@ -9,10 +9,8 @@ stm32f3_binary(
         "main.cpp",
     ],
     deps = [
-        "//bsp/pin",
+        "//bsp/stm32f3discovery",
         "//bsp/utility",
-        "@cmsis_device_f3",
-        "@cmsis//:core",
         "@stm32f3xx_hal",
     ],
 )

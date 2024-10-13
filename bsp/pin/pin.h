@@ -1,3 +1,5 @@
+#pragma once
+
 #include "stm32f3xx_hal_gpio.h"
 
 namespace mart {
