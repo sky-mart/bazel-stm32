@@ -7,6 +7,6 @@ cc_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "//bsp/led",
+        "//bsp/pin",
     ],
 )

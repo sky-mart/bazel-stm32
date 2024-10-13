@@ -1,11 +1,11 @@
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
-    name = "led",
+    name = "pin",
     srcs = [
-        "led.cpp",
-        "led.h",
-        "led_array.h",
+        "pin.cpp",
+        "pin.h",
+        "pin_array.h",
     ],
     visibility = ["//visibility:public"],
     deps = [

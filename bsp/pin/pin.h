@@ -2,10 +2,10 @@
 
 namespace mart {
 
-class Led
+class Pin
 {
 public:
-  Led(GPIO_TypeDef* port, uint32_t pin);
+  Pin(GPIO_TypeDef* port, uint32_t pin);
 
   void init();
   void set();
