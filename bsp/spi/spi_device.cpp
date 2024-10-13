@@ -42,4 +42,14 @@ std::optional<uint8_t> SpiDevice::read(uint8_t data, int timeout)
   return data;
 }
 
+HAL_StatusTypeDef SpiDevice::transmit(uint8_t data, int timeout)
+{
+  return HAL_SPI_Transmit(&hspi_, &data, sizeof(data), timeout);
+}
+
+HAL_StatusTypeDef SpiDevice::transmit(uint8_t* data, size_t size, int timeout)
+{
+  return HAL_SPI_Transmit(&hspi_, data, size, timeout);
+}
+
 }

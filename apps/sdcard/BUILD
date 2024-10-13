@@ -9,6 +9,7 @@ stm32f3_binary(
         "main.cpp",
     ],
     deps = [
+        "//bsp/sdcard",
         "//bsp/stm32f3discovery",
         "//bsp/utility",
         "@stm32f3xx_hal",

@@ -21,7 +21,10 @@ public:
 
   std::optional<uint8_t> read(uint8_t data, int timeout = HAL_MAX_DELAY);
 
-private:
+  HAL_StatusTypeDef transmit(uint8_t data, int timeout = HAL_MAX_DELAY);
+  HAL_StatusTypeDef transmit(uint8_t* data, size_t size, int timeout = HAL_MAX_DELAY);
+
+protected:
   SPI_HandleTypeDef hspi_;
   Pin cs_pin_;
 };
