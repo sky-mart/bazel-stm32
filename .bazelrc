@@ -11,3 +11,9 @@ build --cxxopt=-Wextra
 build --cxxopt=-Wpedantic
 build --cxxopt=-Werror
 build --cxxopt=-Wimplicit-fallthrough
+
+build --copt=-DSTM32F303xC
+
+build:dbg --strip=never
+build:dbg --copt=-g
+build:dbg --linkopt=-g
