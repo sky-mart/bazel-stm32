@@ -56,6 +56,9 @@ int main()
     error_handler();
   }
 
+  uint32_t totalBlocks = (fs.n_fatent - 2) * fs.csize;
+  uint32_t freeBlocks = free_clust * fs.csize;
+
   DIR dir;
   fat_res = f_opendir(&dir, "/");
   if (fat_res != FR_OK)
@@ -85,81 +88,61 @@ int main()
     error_handler();
   }
 
+  char writeBuff[128];
+  snprintf(writeBuff, sizeof(writeBuff), "Total blocks: %lu (%lu Mb); Free blocks: %lu (%lu Mb)\r\n",
+           totalBlocks, totalBlocks / 2000,
+           freeBlocks, freeBlocks / 2000);
 
-  /*uint32_t blocks_number;
-  res = sdcard.get_blocks_number(&blocks_number);
-  if (res < 0)
+  FIL logFile;
+  fat_res = f_open(&logFile, "log5.txt", FA_OPEN_APPEND | FA_WRITE);
+  if (fat_res != FR_OK)
   {
     error_handler();
   }
 
-  const uint32_t start_block_addr = 0x00ABCD;
-  uint32_t block_addr = start_block_addr;
-  uint8_t block[512];
-
-  snprintf((char*)block, sizeof(block), "0x%08X", (int)block_addr);
-
-  res = sdcard.write_single_block(block_addr, block);
-  if (res < 0)
+  unsigned int bytesToWrite = strlen(writeBuff);
+  unsigned int bytesWritten;
+  fat_res = f_write(&logFile, writeBuff, bytesToWrite, &bytesWritten);
+  if (fat_res != FR_OK)
   {
     error_handler();
   }
 
-  memset(block, 0, sizeof(block));
-
-  res = sdcard.read_single_block(block_addr, block);
-  if (res < 0)
+  fat_res = f_close(&logFile);
+  if (fat_res != FR_OK)
   {
     error_handler();
   }
 
-  block_addr = start_block_addr + 1;
-  res = sdcard.write_begin(block_addr);
-  if (res < 0)
+  FIL msgFile;
+  fat_res = f_open(&msgFile, "log5.txt", FA_READ);
+  if (fat_res != FR_OK)
   {
     error_handler();
   }
 
-  for(int i = 0; i < 3; i++)
-  {
-    snprintf((char*)block, sizeof(block), "0x%08X", (int)block_addr);
-
-    res = sdcard.write_data(block);
-    if (res < 0)
-    {
-      error_handler();
-    }
-
-    block_addr++;
-  }
-
-  res = sdcard.write_end();
-  if (res < 0)
+  char readBuff[128];
+  unsigned int bytesRead;
+  fat_res = f_read(&msgFile, readBuff, sizeof(readBuff)-1, &bytesRead);
+  if (fat_res != FR_OK)
   {
     error_handler();
   }
 
-  block_addr = start_block_addr + 1;
-  res = sdcard.read_begin(block_addr);
-  if (res < 0)
+  readBuff[bytesRead] = '\0';
+
+  fat_res = f_close(&msgFile);
+  if (fat_res != FR_OK)
   {
     error_handler();
   }
 
-  for(int i = 0; i < 3; i++)
-  {
-    res = sdcard.read_data(block);
-    if (res < 0)
-    {
-      error_handler();
-    }
-  }
-
-  res = sdcard.read_end();
-  if (res < 0)
+  // Unmount
+  fat_res = f_mount(NULL, "", 0);
+  if (fat_res != FR_OK)
   {
     error_handler();
-  }*/
+  }
 
   while (true)
   {
