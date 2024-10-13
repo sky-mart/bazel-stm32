@@ -42,11 +42,49 @@ int main()
     error_handler();
   }
 
-  const FRESULT fat_res = f_mount(&fs, "", 0);
-  if(fat_res != FR_OK)
+  FRESULT fat_res = f_mount(&fs, "", 0);
+  if (fat_res != FR_OK)
   {
     error_handler();
   }
+
+  uint32_t free_clust;
+  FATFS* fs_ptr = &fs;
+  fat_res = f_getfree("", &free_clust, &fs_ptr); // Warning! This fills fs.n_fatent and fs.csize!
+  if (fat_res != FR_OK)
+  {
+    error_handler();
+  }
+
+  DIR dir;
+  fat_res = f_opendir(&dir, "/");
+  if (fat_res != FR_OK)
+  {
+    error_handler();
+  }
+
+  FILINFO fileInfo;
+  uint32_t totalFiles = 0;
+  uint32_t totalDirs = 0;
+  for(;;) {
+    fat_res = f_readdir(&dir, &fileInfo);
+    if ((fat_res != FR_OK) || (fileInfo.fname[0] == '\0')) {
+      break;
+    }
+
+    if(fileInfo.fattrib & AM_DIR) {
+      totalDirs++;
+    } else {
+      totalFiles++;
+    }
+  }
+
+  fat_res = f_closedir(&dir);
+  if (fat_res != FR_OK)
+  {
+    error_handler();
+  }
+
 
   /*uint32_t blocks_number;
   res = sdcard.get_blocks_number(&blocks_number);
