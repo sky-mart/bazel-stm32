@@ -35,7 +35,11 @@ void Pin::init_alternate(uint32_t mode, uint32_t pull, uint32_t speed,
 
 void Pin::set() { HAL_GPIO_WritePin(port_, pin_, GPIO_PIN_SET); }
 
+void Pin::high() { set(); }
+
 void Pin::clear() { HAL_GPIO_WritePin(port_, pin_, GPIO_PIN_RESET); }
+
+void Pin::low() { clear(); }
 
 void Pin::toggle() { HAL_GPIO_TogglePin(port_, pin_); }
 

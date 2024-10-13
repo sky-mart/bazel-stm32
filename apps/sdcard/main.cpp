@@ -48,7 +48,7 @@ public:
   {
     data |= READ_CMD;
 
-    cs_pin_.clear();
+    cs_pin_.low();
 
     if (HAL_SPI_Transmit(&hspi_, &data, sizeof(data), TIMEOUT) != HAL_OK)
     {
@@ -60,7 +60,7 @@ public:
       error_handler();
     }
 
-    cs_pin_.set();
+    cs_pin_.high();
 
     return data;
   }
