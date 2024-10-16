@@ -1,6 +1,7 @@
 #include "stm32f3xx_hal.h"
 #include "bsp/sdcard/sdcard.h"
 #include "bsp/stm32f3discovery/gyroscope.h"
+#include "bsp/stm32f3discovery/board.h"
 #include "bsp/utility/utility.h"
 #include "ff.h"
 
@@ -31,6 +32,10 @@ int main()
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOE_CLK_ENABLE();
 
+  auto leds = stm32f3discovery::leds();
+  leds.init_as_leds();
+
+  // we create it just to unselect
   stm32f3discovery::Gyroscope gyro;
   gyro.unselect();
 
@@ -146,5 +151,10 @@ int main()
 
   while (true)
   {
+    for (size_t i = 0; i < leds.count(); ++i)
+    {
+      leds[i].toggle();
+      delay_ms(250U);
+    }
   }
 }
