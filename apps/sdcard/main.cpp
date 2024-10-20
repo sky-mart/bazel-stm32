@@ -27,6 +27,7 @@ void assert(const bool statement)
   }
 }
 
+volatile bool should_play = false;
 volatile bool end_of_file_reached = false;
 volatile bool read_next_chunk = false;
 volatile uint16_t* signal_play_buff = NULL;
@@ -36,7 +37,7 @@ volatile uint16_t signal_buff2[4096];
 
 extern "C" {
 void HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s) {
-    if(end_of_file_reached)
+    if (!should_play || end_of_file_reached)
         return;
 
     volatile uint16_t* temp = signal_play_buff;
@@ -46,6 +47,24 @@ void HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s) {
     int nsamples = sizeof(signal_buff1) / sizeof(signal_buff1[0]);
     HAL_I2S_Transmit_IT(hi2s, (uint16_t*)signal_play_buff, nsamples);
     read_next_chunk = true;
+}
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  if (GPIO_Pin == GPIO_PIN_0)
+  {
+    if (should_play)
+    {
+      should_play = false;
+    }
+    else
+    {
+      should_play = true;
+      int nsamples = sizeof(signal_buff1) / sizeof(signal_buff1[0]);
+      HAL_I2S_Transmit_IT(&hi2s, (uint16_t*)signal_play_buff, nsamples);
+      read_next_chunk = true;
+    }
+  }
 }
 }
 
@@ -68,6 +87,7 @@ int play_wav(const char* filename, I2S_HandleTypeDef *hi2s)
   fat_res = f_read(&file, (uint8_t*)signal_buff2, sizeof(signal_buff2), &bytes_read);
   assert(fat_res == FR_OK);
 
+  should_play = true;
   read_next_chunk = false;
   end_of_file_reached = false;
   signal_play_buff = signal_buff1;
@@ -123,18 +143,8 @@ void SystemClock_Config(void)
   assert(res == HAL_OK);
 }
 
-int main()
+void init_i2s()
 {
-  HAL_Init();
-
-  SystemClock_Config();
-
-  __HAL_RCC_SPI1_CLK_ENABLE();
-  __HAL_RCC_SPI2_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-  __HAL_RCC_GPIOE_CLK_ENABLE();
-
   GPIO_InitTypeDef config;
   config.Pin = GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_15;
   config.Mode = GPIO_MODE_AF_PP;
@@ -156,6 +166,34 @@ int main()
   hi2s.Init.FullDuplexMode = I2S_FULLDUPLEXMODE_DISABLE;
   auto hal_res = HAL_I2S_Init(&hi2s);
   assert(hal_res == HAL_OK);
+}
+
+void init_button()
+{
+  GPIO_InitTypeDef config;
+  config.Pin = GPIO_PIN_0;
+  config.Mode = GPIO_MODE_IT_RISING;
+  config.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &config);
+
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+}
+
+int main()
+{
+  HAL_Init();
+
+  SystemClock_Config();
+
+  __HAL_RCC_SPI1_CLK_ENABLE();
+  __HAL_RCC_SPI2_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOE_CLK_ENABLE();
+
+  init_i2s();
+  init_button();
 
   // auto leds = stm32f3discovery::leds();
   // leds.init_as_leds();
