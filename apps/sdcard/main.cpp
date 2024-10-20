@@ -5,6 +5,7 @@
 #include "bsp/utility/utility.h"
 #include "ff.h"
 
+#include <cassert>
 #include <cstdio>
 #include <cstring>
 
@@ -13,15 +14,20 @@ using namespace mart;
 Sdcard sdcard{SPI1, Pin{GPIOE, GPIO_PIN_5}};
 FATFS fs;
 
-void error_handler(void)
+void loop_forever(void)
 {
-  /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
   while (1)
   {
   }
-  /* USER CODE END Error_Handler_Debug */
+}
+
+void assert(const bool statement)
+{
+  if (statement == false)
+  {
+    loop_forever();
+  }
 }
 
 int main()
@@ -39,37 +45,23 @@ int main()
   stm32f3discovery::Gyroscope gyro;
   gyro.unselect();
 
-  // Sdcard sdcard{SPI1, Pin{GPIOE, GPIO_PIN_5}};
-
   const int sdcard_res = sdcard.init(Pin{GPIOA, GPIO_PIN_5}, Pin{GPIOA, GPIO_PIN_6}, Pin{GPIOA, GPIO_PIN_7}, GPIO_AF5_SPI1);
-  if (sdcard_res < 0)
-  {
-    error_handler();
-  }
+  assert(sdcard_res >= 0);
 
   FRESULT fat_res = f_mount(&fs, "", 0);
-  if (fat_res != FR_OK)
-  {
-    error_handler();
-  }
+  assert(fat_res == FR_OK);
 
   uint32_t free_clust;
   FATFS* fs_ptr = &fs;
   fat_res = f_getfree("", &free_clust, &fs_ptr); // Warning! This fills fs.n_fatent and fs.csize!
-  if (fat_res != FR_OK)
-  {
-    error_handler();
-  }
+  assert(fat_res == FR_OK);
 
   uint32_t totalBlocks = (fs.n_fatent - 2) * fs.csize;
   uint32_t freeBlocks = free_clust * fs.csize;
 
   DIR dir;
   fat_res = f_opendir(&dir, "/");
-  if (fat_res != FR_OK)
-  {
-    error_handler();
-  }
+  assert(fat_res == FR_OK);
 
   FILINFO fileInfo;
   uint32_t totalFiles = 0;
@@ -88,10 +80,7 @@ int main()
   }
 
   fat_res = f_closedir(&dir);
-  if (fat_res != FR_OK)
-  {
-    error_handler();
-  }
+  assert(fat_res == FR_OK);
 
   char writeBuff[128];
   snprintf(writeBuff, sizeof(writeBuff), "Total blocks: %lu (%lu Mb); Free blocks: %lu (%lu Mb)\r\n",
@@ -100,54 +89,33 @@ int main()
 
   FIL logFile;
   fat_res = f_open(&logFile, "log5.txt", FA_OPEN_APPEND | FA_WRITE);
-  if (fat_res != FR_OK)
-  {
-    error_handler();
-  }
+  assert(fat_res == FR_OK);
 
   unsigned int bytesToWrite = strlen(writeBuff);
   unsigned int bytesWritten;
   fat_res = f_write(&logFile, writeBuff, bytesToWrite, &bytesWritten);
-  if (fat_res != FR_OK)
-  {
-    error_handler();
-  }
+  assert(fat_res == FR_OK);
 
   fat_res = f_close(&logFile);
-  if (fat_res != FR_OK)
-  {
-    error_handler();
-  }
+  assert(fat_res == FR_OK);
 
   FIL msgFile;
   fat_res = f_open(&msgFile, "log5.txt", FA_READ);
-  if (fat_res != FR_OK)
-  {
-    error_handler();
-  }
+  assert(fat_res == FR_OK);
 
   char readBuff[128];
   unsigned int bytesRead;
   fat_res = f_read(&msgFile, readBuff, sizeof(readBuff)-1, &bytesRead);
-  if (fat_res != FR_OK)
-  {
-    error_handler();
-  }
+  assert(fat_res == FR_OK);
 
   readBuff[bytesRead] = '\0';
 
   fat_res = f_close(&msgFile);
-  if (fat_res != FR_OK)
-  {
-    error_handler();
-  }
+  assert(fat_res == FR_OK);
 
   // Unmount
   fat_res = f_mount(NULL, "", 0);
-  if (fat_res != FR_OK)
-  {
-    error_handler();
-  }
+  assert(fat_res == FR_OK);
 
   while (true)
   {

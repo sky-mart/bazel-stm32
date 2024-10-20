@@ -12,6 +12,8 @@
 
 #include "bsp/sdcard/sdcard.h"
 
+/* It looks ok to use a global variable here, because this lib allows only
+ * one SD card at a time anyway. */
 extern mart::Sdcard sdcard;
 
 /* Definitions of physical drive number for each drive */
