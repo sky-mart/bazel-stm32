@@ -24,7 +24,7 @@ int Sdcard::init(Pin clk, Pin mosi, Pin miso, uint32_t spi_alternate)
   config.CLKPolarity = SPI_POLARITY_LOW;
   config.CLKPhase = SPI_PHASE_1EDGE;
   config.NSS = SPI_NSS_SOFT;
-  config.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
+  config.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
   config.FirstBit = SPI_FIRSTBIT_MSB;
   config.TIMode = SPI_TIMODE_DISABLE;
   config.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
