@@ -1,11 +1,12 @@
+#include "fatfs/ff.h"
 #include "stm32f3xx_hal.h"
 #include "bsp/sdcard/sdcard.h"
 #include "bsp/stm32f3discovery/gyroscope.h"
 #include "bsp/stm32f3discovery/board.h"
 #include "bsp/utility/utility.h"
+#include "apps/sdcard/wav_header.h"
 #include "ff.h"
 
-#include <cassert>
 #include <cstdio>
 #include <cstring>
 
@@ -14,19 +15,14 @@ using namespace mart;
 Sdcard sdcard{SPI1, Pin{GPIOE, GPIO_PIN_5}};
 FATFS fs;
 
-void loop_forever(void)
-{
-  __disable_irq();
-  while (1)
-  {
-  }
-}
-
 void assert(const bool statement)
 {
   if (statement == false)
   {
-    loop_forever();
+    __disable_irq();
+    while (1)
+    {
+    }
   }
 }
 
@@ -51,71 +47,21 @@ int main()
   FRESULT fat_res = f_mount(&fs, "", 0);
   assert(fat_res == FR_OK);
 
-  uint32_t free_clust;
-  FATFS* fs_ptr = &fs;
-  fat_res = f_getfree("", &free_clust, &fs_ptr); // Warning! This fills fs.n_fatent and fs.csize!
+  FIL file;
+  fat_res = f_open(&file, "imp-max.wav", FA_READ);
   assert(fat_res == FR_OK);
 
-  uint32_t totalBlocks = (fs.n_fatent - 2) * fs.csize;
-  uint32_t freeBlocks = free_clust * fs.csize;
-
-  DIR dir;
-  fat_res = f_opendir(&dir, "/");
+  UINT bytes_read;
+  WavHeader wav_header;
+  fat_res = f_read(&file, &wav_header, sizeof(wav_header), &bytes_read);
   assert(fat_res == FR_OK);
 
-  FILINFO fileInfo;
-  uint32_t totalFiles = 0;
-  uint32_t totalDirs = 0;
-  for(;;) {
-    fat_res = f_readdir(&dir, &fileInfo);
-    if ((fat_res != FR_OK) || (fileInfo.fname[0] == '\0')) {
-      break;
-    }
-
-    if(fileInfo.fattrib & AM_DIR) {
-      totalDirs++;
-    } else {
-      totalFiles++;
-    }
-  }
-
-  fat_res = f_closedir(&dir);
-  assert(fat_res == FR_OK);
-
-  char writeBuff[128];
-  snprintf(writeBuff, sizeof(writeBuff), "Total blocks: %lu (%lu Mb); Free blocks: %lu (%lu Mb)\r\n",
-           totalBlocks, totalBlocks / 2000,
-           freeBlocks, freeBlocks / 2000);
-
-  FIL logFile;
-  fat_res = f_open(&logFile, "log5.txt", FA_OPEN_APPEND | FA_WRITE);
-  assert(fat_res == FR_OK);
-
-  unsigned int bytesToWrite = strlen(writeBuff);
-  unsigned int bytesWritten;
-  fat_res = f_write(&logFile, writeBuff, bytesToWrite, &bytesWritten);
-  assert(fat_res == FR_OK);
-
-  fat_res = f_close(&logFile);
-  assert(fat_res == FR_OK);
-
-  FIL msgFile;
-  fat_res = f_open(&msgFile, "log5.txt", FA_READ);
-  assert(fat_res == FR_OK);
-
-  char readBuff[128];
-  unsigned int bytesRead;
-  fat_res = f_read(&msgFile, readBuff, sizeof(readBuff)-1, &bytesRead);
-  assert(fat_res == FR_OK);
-
-  readBuff[bytesRead] = '\0';
-
-  fat_res = f_close(&msgFile);
+  fat_res = f_close(&file);
   assert(fat_res == FR_OK);
 
   // Unmount
-  fat_res = f_mount(NULL, "", 0);
-  assert(fat_res == FR_OK);
+  // fat_res = f_mount(NULL, "", 0);
+  // assert(fat_res == FR_OK);
 
   while (true)
   {

@@ -7,6 +7,7 @@ stm32f3_binary(
     srcs = [
         "irq_handlers.cpp",
         "main.cpp",
+        "wav_header.h",
     ],
     deps = [
         "//bsp/sdcard",
