@@ -12,7 +12,7 @@
 
 using namespace mart;
 
-Sdcard sdcard{SPI1, Pin{GPIOE, GPIO_PIN_5}};
+Sdcard sdcard{stm32f3discovery::hspi1, Pin{GPIOE, GPIO_PIN_5}};
 FATFS fs;
 I2S_HandleTypeDef hi2s;
 

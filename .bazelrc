@@ -13,6 +13,7 @@ build --cxxopt=-Werror
 build --cxxopt=-Wimplicit-fallthrough
 
 build --copt=-DSTM32F303xC
+build --copt=-Wno-missing-field-initializers
 
 build:dbg --strip=never
 build:dbg --copt=-g

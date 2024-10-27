@@ -3,9 +3,8 @@
 
 namespace mart {
 
-SpiDevice::SpiDevice(SPI_TypeDef *instance, Pin cs_pin) : cs_pin_(cs_pin)
+SpiDevice::SpiDevice(SPI_HandleTypeDef hspi, Pin cs_pin) : hspi_(hspi), cs_pin_(cs_pin)
 {
-  hspi_.Instance = instance;
 }
 
 HAL_StatusTypeDef SpiDevice::init(const SPI_InitTypeDef &config)

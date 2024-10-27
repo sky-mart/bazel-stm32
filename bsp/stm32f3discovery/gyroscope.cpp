@@ -1,4 +1,5 @@
 #include "bsp/stm32f3discovery/gyroscope.h"
+#include "bsp/stm32f3discovery/board.h"
 
 using namespace mart;
 
@@ -6,7 +7,7 @@ namespace stm32f3discovery {
 
 constexpr uint8_t READ_CMD = 0x80U;
 
-Gyroscope::Gyroscope() : SpiDevice(SPI1, Pin{GPIOE, GPIO_PIN_3})
+Gyroscope::Gyroscope() : SpiDevice(hspi1, Pin{GPIOE, GPIO_PIN_3})
 {
 }
 
