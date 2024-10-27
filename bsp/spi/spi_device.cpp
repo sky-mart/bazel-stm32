@@ -3,7 +3,7 @@
 
 namespace mart {
 
-SpiDevice::SpiDevice(SPI_HandleTypeDef hspi, Pin cs_pin) : hspi_(hspi), cs_pin_(cs_pin)
+SpiDevice::SpiDevice(SPI_HandleTypeDef& hspi, Pin cs_pin) : hspi_(hspi), cs_pin_(cs_pin)
 {
 }
 
@@ -24,9 +24,14 @@ void SpiDevice::unselect()
   cs_pin_.high();
 }
 
+ChipSelect SpiDevice::make_chip_select()
+{
+  return ChipSelect{cs_pin_};
+}
+
 std::optional<uint8_t> SpiDevice::read(uint8_t data, int timeout)
 {
-  ChipSelect cs{cs_pin_};
+  const auto cs = make_chip_select();
 
   if (HAL_SPI_Transmit(&hspi_, &data, sizeof(data), timeout) != HAL_OK)
   {

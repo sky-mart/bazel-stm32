@@ -1,6 +1,7 @@
 #pragma once
 
 #include "bsp/pin/pin.h"
+#include "bsp/spi/chip_select.h"
 #include "stm32f3xx_hal_dma.h"
 #include "stm32f3xx_hal_spi.h"
 
@@ -11,7 +12,7 @@ namespace mart {
 class SpiDevice
 {
 public:
-  SpiDevice(SPI_HandleTypeDef hspi, Pin cs_pin);
+  SpiDevice(SPI_HandleTypeDef& hspi, Pin cs_pin);
 
   HAL_StatusTypeDef init(const SPI_InitTypeDef& config);
 
@@ -25,7 +26,9 @@ public:
   HAL_StatusTypeDef transmit(uint8_t* data, size_t size, int timeout = HAL_MAX_DELAY);
 
 protected:
-  SPI_HandleTypeDef hspi_;
+  ChipSelect make_chip_select();
+
+  SPI_HandleTypeDef& hspi_;
   Pin cs_pin_;
 };
 

@@ -17,6 +17,11 @@ public:
     cs_pin_.high();
   }
 
+  ChipSelect(const ChipSelect& other) = delete;
+  ChipSelect& operator=(const ChipSelect& other) = delete;
+  ChipSelect(ChipSelect&& other) : cs_pin_(other.cs_pin_) {}
+  ChipSelect& operator=(ChipSelect&& other) = delete;
+
 private:
   Pin cs_pin_;
 };

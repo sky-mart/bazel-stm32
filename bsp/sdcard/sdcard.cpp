@@ -53,7 +53,7 @@ int Sdcard::init(Pin clk, Pin mosi, Pin miso, uint32_t spi_alternate)
     }
   }
 
-  const ChipSelect cs{cs_pin_};
+  const auto cs = make_chip_select();
 
   /*
     Step 2.
@@ -206,7 +206,7 @@ int Sdcard::get_blocks_number(uint32_t* number)
   uint8_t crc[2];
 
   {
-    ChipSelect cs{cs_pin_};
+    const auto cs = make_chip_select();
 
     if (wait_not_busy() < 0)
     {
@@ -260,7 +260,7 @@ int Sdcard::read_single_block(uint32_t block_num, uint8_t* data)
 {
   uint8_t crc[2];
 
-  ChipSelect cs{cs_pin_};
+  const auto cs = make_chip_select();
 
   if (wait_not_busy() < 0)
   {
@@ -301,7 +301,7 @@ int Sdcard::read_single_block(uint32_t block_num, uint8_t* data)
 
 int Sdcard::write_single_block(uint32_t block_num, const uint8_t *data)
 {
-  ChipSelect cs{cs_pin_};
+  const auto cs = make_chip_select();
 
   if (wait_not_busy() < 0)
   {
@@ -354,7 +354,7 @@ int Sdcard::write_single_block(uint32_t block_num, const uint8_t *data)
 
 int Sdcard::read_begin(uint32_t block_num)
 {
-  ChipSelect cs{cs_pin_};
+  const auto cs = make_chip_select();
 
   if (wait_not_busy() < 0)
   {
@@ -384,7 +384,7 @@ int Sdcard::read_data(uint8_t* data)
 {
   uint8_t crc[2];
 
-  ChipSelect cs{cs_pin_};
+  const auto cs = make_chip_select();
 
   if(wait_data_token(DATA_TOKEN_CMD18) < 0)
   {
@@ -406,7 +406,7 @@ int Sdcard::read_data(uint8_t* data)
 
 int Sdcard::read_end()
 {
-  ChipSelect cs{cs_pin_};
+  const auto cs = make_chip_select();
 
   /* CMD12 (STOP_TRANSMISSION) */
   {
@@ -433,7 +433,7 @@ int Sdcard::read_end()
 
 int Sdcard::write_begin(uint32_t block_num)
 {
-  ChipSelect cs{cs_pin_};
+  const auto cs = make_chip_select();
 
   if (wait_not_busy() < 0)
   {
@@ -461,7 +461,7 @@ int Sdcard::write_begin(uint32_t block_num)
 
 int Sdcard::write_data(const uint8_t* data)
 {
-  ChipSelect cs{cs_pin_};
+  const auto cs = make_chip_select();
 
   transmit(DATA_TOKEN_CMD25);
   transmit((uint8_t*)data, BLOCK_SIZE);
@@ -492,7 +492,7 @@ int Sdcard::write_data(const uint8_t* data)
 
 int Sdcard::write_end()
 {
-  ChipSelect cs{cs_pin_};
+  const auto cs = make_chip_select();
 
   const uint8_t stop_transition_for_cmd25 = 0xFDU;
   transmit(stop_transition_for_cmd25);
