@@ -10,6 +10,7 @@ stm32f3_binary(
         "wav_header.h",
     ],
     deps = [
+        "//bsp/ili9341",
         "//bsp/sdcard",
         "//bsp/stm32f3discovery",
         "//bsp/utility",

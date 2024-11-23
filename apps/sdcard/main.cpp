@@ -1,5 +1,6 @@
 #include "fatfs/ff.h"
 #include "stm32f3xx_hal.h"
+#include "bsp/ili9341/ili9341.h"
 #include "bsp/sdcard/sdcard.h"
 #include "bsp/stm32f3discovery/gyroscope.h"
 #include "bsp/stm32f3discovery/board.h"
@@ -15,6 +16,7 @@ using namespace mart;
 Sdcard sdcard{stm32f3discovery::hspi1, Pin{GPIOE, GPIO_PIN_5}};
 FATFS fs;
 I2S_HandleTypeDef hi2s;
+Ili9341 display{stm32f3discovery::hspi1, Pin{GPIOE, GPIO_PIN_4}, Pin{GPIOE, GPIO_PIN_2}, Pin{GPIOE, GPIO_PIN_3}};
 
 void assert(const bool statement)
 {
@@ -201,9 +203,14 @@ int main()
   // we create it just to unselect
   stm32f3discovery::Gyroscope gyro;
   gyro.unselect();
+  display.unselect();
 
   const int sdcard_res = sdcard.init(Pin{GPIOA, GPIO_PIN_5}, Pin{GPIOA, GPIO_PIN_6}, Pin{GPIOA, GPIO_PIN_7}, GPIO_AF5_SPI1);
   assert(sdcard_res >= 0);
+
+  display.init();
+  display.fill_screen(0);
+  delay_ms(100);
 
   FRESULT fat_res = f_mount(&fs, "", 0);
   assert(fat_res == FR_OK);
