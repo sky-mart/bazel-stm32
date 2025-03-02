@@ -1,4 +1,5 @@
 #include "bsp/stm32f3discovery/gyroscope.h"
+#include "bsp/spi/spi_device.h"
 #include "bsp/stm32f3discovery/board.h"
 
 using namespace mart;
@@ -34,9 +35,10 @@ HAL_StatusTypeDef Gyroscope::init()
   return SpiDevice::init(config);
 }
 
-std::optional<uint8_t> Gyroscope::read(uint8_t data, int timeout)
+std::optional<uint8_t> Gyroscope::read(Register reg, int timeout)
 {
-  return SpiDevice::read(data | READ_CMD, timeout);
+  return SpiDevice::read(static_cast<uint8_t>(reg) | READ_CMD, timeout);
 }
+
 
 }
