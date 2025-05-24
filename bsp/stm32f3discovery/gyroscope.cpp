@@ -8,14 +8,14 @@ namespace stm32f3discovery {
 
 constexpr uint8_t READ_CMD = 0x80U;
 
-Gyroscope::Gyroscope() : SpiDevice(hspi1, Pin{GPIOE, GPIO_PIN_3})
+Gyroscope::Gyroscope() : SpiDevice(hspi1, Pin{*GPIOE, GPIO_PIN_3})
 {
 }
 
 HAL_StatusTypeDef Gyroscope::init()
 {
-  Pin spi_pins{GPIOA, GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7};
-  spi_pins.init_alternate(GPIO_MODE_AF_PP, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, GPIO_AF5_SPI1);
+  Pin spi_pins{*GPIOA, GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7};
+  spi_pins.init(GPIO_MODE_AF_PP, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, GPIO_AF5_SPI1);
 
   SPI_InitTypeDef config;
   config.Mode = SPI_MODE_MASTER;

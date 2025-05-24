@@ -13,9 +13,9 @@ constexpr uint8_t DATA_TOKEN_CMD25 = 0xFCU;
 
 int Sdcard::init(Pin clk, Pin mosi, Pin miso, uint32_t spi_alternate)
 {
-  clk.init_alternate(GPIO_MODE_AF_PP, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, spi_alternate);
-  miso.init_alternate(GPIO_MODE_AF_PP, GPIO_PULLUP, GPIO_SPEED_FREQ_HIGH, spi_alternate);
-  mosi.init_alternate(GPIO_MODE_AF_PP, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, spi_alternate);
+  clk.init(GPIO_MODE_AF_PP, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, spi_alternate);
+  miso.init(GPIO_MODE_AF_PP, GPIO_PULLUP, GPIO_SPEED_FREQ_HIGH, spi_alternate);
+  mosi.init(GPIO_MODE_AF_PP, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, spi_alternate);
 
   SPI_InitTypeDef config;
   config.Mode = SPI_MODE_MASTER;

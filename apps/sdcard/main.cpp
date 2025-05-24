@@ -13,10 +13,10 @@
 
 using namespace mart;
 
-Sdcard sdcard{stm32f3discovery::hspi1, Pin{GPIOE, GPIO_PIN_5}};
+Sdcard sdcard{stm32f3discovery::hspi1, Pin{*GPIOE, GPIO_PIN_5}};
 FATFS fs;
 I2S_HandleTypeDef hi2s;
-Ili9341 display{stm32f3discovery::hspi1, Pin{GPIOE, GPIO_PIN_4}, Pin{GPIOE, GPIO_PIN_2}, Pin{GPIOE, GPIO_PIN_3}};
+Ili9341 display{stm32f3discovery::hspi1, Pin{*GPIOE, GPIO_PIN_4}, Pin{*GPIOE, GPIO_PIN_2}, Pin{*GPIOE, GPIO_PIN_3}};
 
 void assert(const bool statement)
 {
@@ -205,7 +205,7 @@ int main()
   gyro.unselect();
   display.unselect();
 
-  const int sdcard_res = sdcard.init(Pin{GPIOA, GPIO_PIN_5}, Pin{GPIOA, GPIO_PIN_6}, Pin{GPIOA, GPIO_PIN_7}, GPIO_AF5_SPI1);
+  const int sdcard_res = sdcard.init(Pin{*GPIOA, GPIO_PIN_5}, Pin{*GPIOA, GPIO_PIN_6}, Pin{*GPIOA, GPIO_PIN_7}, GPIO_AF5_SPI1);
   assert(sdcard_res >= 0);
 
   display.init();
