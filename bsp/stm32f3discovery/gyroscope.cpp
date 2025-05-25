@@ -14,7 +14,7 @@ Gyroscope::Gyroscope() : SpiDevice(*SPI1, Pin{*GPIOE, GPIO_PIN_3})
 
 HAL_StatusTypeDef Gyroscope::init()
 {
-  Pin pins = spi_pins(SPI1);
+  Pin pins = spi_pins(handle_.Instance);
   pins.init(GPIO_MODE_AF_PP, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, GPIO_AF5_SPI1);
 
   SPI_InitTypeDef config;

@@ -27,4 +27,9 @@ mart::Pin spi_pins(SPI_TypeDef* /*spi*/)
   // }
 }
 
+mart::Pin uart_pins(USART_TypeDef* /*uart*/)
+{
+  return mart::Pin{*GPIOA, GPIO_PIN_2 | GPIO_PIN_3};
+}
+
 }
