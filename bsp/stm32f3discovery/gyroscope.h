@@ -1,13 +1,14 @@
 #pragma once
 
 #include "bsp/spi/spi_device.h"
+#include "std_ext/types.h"
 
 namespace stm32f3discovery {
 
 class Gyroscope : public mart::SpiDevice
 {
 public:
-  enum class Register : uint8_t
+  enum class Register : u8
   {
     WHO_AM_I      = 0x0FU,
     CTRL_REG1     = 0x20U,
@@ -41,7 +42,7 @@ public:
 
   HAL_StatusTypeDef init();
 
-  std::optional<uint8_t> read(Register reg, int timeout = HAL_MAX_DELAY);
+  std::optional<u8> read(Register reg, i32 timeout = HAL_MAX_DELAY);
 };
 
 }

@@ -6,7 +6,7 @@ using namespace mart;
 
 namespace stm32f3discovery {
 
-constexpr uint8_t READ_CMD = 0x80U;
+constexpr u8 READ_CMD = 0x80U;
 
 Gyroscope::Gyroscope() : SpiDevice(hspi1, Pin{*GPIOE, GPIO_PIN_3})
 {
@@ -35,9 +35,9 @@ HAL_StatusTypeDef Gyroscope::init()
   return SpiDevice::init(config);
 }
 
-std::optional<uint8_t> Gyroscope::read(Register reg, int timeout)
+std::optional<u8> Gyroscope::read(Register reg, i32 timeout)
 {
-  return SpiDevice::read(static_cast<uint8_t>(reg) | READ_CMD, timeout);
+  return SpiDevice::read(static_cast<u8>(reg) | READ_CMD, timeout);
 }
 
 

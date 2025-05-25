@@ -2,9 +2,9 @@
 
 namespace mart {
 
-Pin::Pin(GPIO_TypeDef& port, uint32_t pin) : port_(port), pin_(pin) {}
+Pin::Pin(GPIO_TypeDef& port, u32 pin) : port_(port), pin_(pin) {}
 
-void Pin::init(uint32_t mode, uint32_t pull, uint32_t speed, uint32_t alternate)
+void Pin::init(u32 mode, u32 pull, u32 speed, u32 alternate)
 {
   GPIO_InitTypeDef config;
   config.Pin = pin_;
@@ -16,7 +16,7 @@ void Pin::init(uint32_t mode, uint32_t pull, uint32_t speed, uint32_t alternate)
   HAL_GPIO_Init(&port_, &config);
 }
 
-void Pin::init_as_led(uint32_t pull)
+void Pin::init_as_led(u32 pull)
 {
   init(GPIO_MODE_OUTPUT_PP, pull, GPIO_SPEED_FREQ_LOW);
 }
