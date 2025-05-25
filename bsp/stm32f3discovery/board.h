@@ -7,6 +7,6 @@ namespace stm32f3discovery {
 
 mart::PinArray<8U> leds();
 
-extern SPI_HandleTypeDef hspi1;
+mart::Pin spi_pins(SPI_TypeDef* spi);
 
 }

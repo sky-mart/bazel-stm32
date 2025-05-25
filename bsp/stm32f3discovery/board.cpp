@@ -18,6 +18,13 @@ mart::PinArray<8U> leds()
   };
 }
 
-SPI_HandleTypeDef hspi1 = {SPI1};
+mart::Pin spi_pins(SPI_TypeDef* /*spi*/)
+{
+  // TODO: handle errors
+  // if (spi == SPI1)
+  // {
+    return mart::Pin{*GPIOA, GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7};
+  // }
+}
 
 }

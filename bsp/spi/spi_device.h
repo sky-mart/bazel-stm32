@@ -12,7 +12,7 @@ namespace mart {
 class SpiDevice
 {
 public:
-  SpiDevice(SPI_HandleTypeDef& hspi, Pin cs_pin);
+  SpiDevice(SPI_TypeDef& spi, Pin cs_pin);
 
   HAL_StatusTypeDef init(const SPI_InitTypeDef& config);
 
@@ -28,7 +28,7 @@ public:
 protected:
   ChipSelect make_chip_select();
 
-  SPI_HandleTypeDef& hspi_;
+  SPI_HandleTypeDef handle_{};
   Pin cs_pin_;
 };
 
