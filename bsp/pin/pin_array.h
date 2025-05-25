@@ -18,15 +18,19 @@ public:
 
   void init_as_leds()
   {
-    for (size_t i = 0; i < N; ++i)
+    for (auto& led : leds_)
     {
-      leds_[i].init_as_led();
+      led.init_as_led();
     }
   }
 
   size_t count() const { return N; }
 
   Pin& operator[](size_t i) { return leds_[i]; }
+
+  auto begin() { return leds_.begin(); }
+
+  auto end() { return leds_.end(); }
 
 private:
   std::array<Pin, N> leds_;

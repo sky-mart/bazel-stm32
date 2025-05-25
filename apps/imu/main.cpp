@@ -38,9 +38,9 @@ int main()
     assert(whoami.has_value());
     assert(whoami.value() == 0xD4U);
 
-    for (size_t i = 0; i < leds.count(); ++i)
+    for (auto& led : leds)
     {
-      leds[i].toggle();
+      led.toggle();
       delay_ms(250U);
     }
   }
