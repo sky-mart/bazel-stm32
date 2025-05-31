@@ -9,5 +9,6 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [
         "@stm32f3xx_hal",
+        "//std_ext:types",
     ],
 )

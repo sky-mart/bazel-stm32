@@ -37,20 +37,19 @@ int main()
   gyro.init();
   uart.init(stm32f3discovery::uart_pins(USART2), 115200U);
 
-  int counter = 0;
   while (true)
   {
     const auto whoami = gyro.read(stm32f3discovery::Gyroscope::Register::WHO_AM_I);
     assert(whoami.has_value());
     assert(whoami.value() == 0xD4U);
 
-    assert(uart.printf("Initialization is successful: %04d\r\n", counter) == HAL_OK);
+    const auto current_ms = ms_since_startup();
+    assert(uart.printf("%04u: Initialization is successful\r\n", current_ms) == HAL_OK);
 
     for (auto& led : leds)
     {
       led.toggle();
       delay_ms(250U);
     }
-    counter++;
   }
 }

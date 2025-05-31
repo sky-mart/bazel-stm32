@@ -3,9 +3,14 @@
 
 namespace mart {
 
-void delay_ms(uint32_t ms)
+void delay_ms(u32 ms)
 {
   HAL_Delay(ms / uwTickFreq);
+}
+
+u32 ms_since_startup()
+{
+  return HAL_GetTick() * uwTickFreq;
 }
 
 }
