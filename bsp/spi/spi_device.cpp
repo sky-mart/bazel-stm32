@@ -30,15 +30,16 @@ ChipSelect SpiDevice::make_chip_select()
   return ChipSelect{cs_pin_};
 }
 
-std::optional<uint8_t> SpiDevice::read(uint8_t data, int timeout)
+std::optional<u8> SpiDevice::read(u8 addr, u32 timeout)
 {
   const auto cs = make_chip_select();
 
-  if (HAL_SPI_Transmit(&handle_, &data, sizeof(data), timeout) != HAL_OK)
+  if (transmit(addr) != HAL_OK)
   {
     return std::nullopt;
   }
 
+  u8 data;
   if (HAL_SPI_Receive(&handle_, &data, sizeof(data), timeout) != HAL_OK)
   {
     return std::nullopt;
@@ -47,12 +48,12 @@ std::optional<uint8_t> SpiDevice::read(uint8_t data, int timeout)
   return data;
 }
 
-HAL_StatusTypeDef SpiDevice::transmit(uint8_t data, int timeout)
+HAL_StatusTypeDef SpiDevice::transmit(u8 data, u32 timeout)
 {
   return HAL_SPI_Transmit(&handle_, &data, sizeof(data), timeout);
 }
 
-HAL_StatusTypeDef SpiDevice::transmit(uint8_t* data, size_t size, int timeout)
+HAL_StatusTypeDef SpiDevice::transmit(u8* data, size_t size, u32 timeout)
 {
   return HAL_SPI_Transmit(&handle_, data, size, timeout);
 }

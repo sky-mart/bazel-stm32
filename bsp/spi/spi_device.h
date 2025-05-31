@@ -2,6 +2,7 @@
 
 #include "bsp/pin/pin.h"
 #include "bsp/spi/chip_select.h"
+#include "std_ext/types.h"
 #include "stm32f3xx_hal_dma.h"
 #include "stm32f3xx_hal_spi.h"
 
@@ -20,10 +21,10 @@ public:
 
   void unselect();
 
-  std::optional<uint8_t> read(uint8_t data, int timeout = HAL_MAX_DELAY);
+  std::optional<u8> read(u8 addr, u32 timeout = HAL_MAX_DELAY);
 
-  HAL_StatusTypeDef transmit(uint8_t data, int timeout = HAL_MAX_DELAY);
-  HAL_StatusTypeDef transmit(uint8_t* data, size_t size, int timeout = HAL_MAX_DELAY);
+  HAL_StatusTypeDef transmit(u8 data, u32 timeout = HAL_MAX_DELAY);
+  HAL_StatusTypeDef transmit(u8* data, size_t size, u32 timeout = HAL_MAX_DELAY);
 
 protected:
   ChipSelect make_chip_select();

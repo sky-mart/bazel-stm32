@@ -10,6 +10,7 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [
         "//bsp/pin",
+        "//std_ext:types",
         "@stm32f3xx_hal",
     ],
 )
