@@ -12,8 +12,8 @@ http_archive(
 http_archive(
     name = "cmsis_device_f3",
     url = "https://github.com/STMicroelectronics/cmsis_device_f3/archive/refs/tags/v2.3.8.zip",
-    sha256 = "d092186f6f1c0ecb56acb636666647da10184a1b5ea2cefa1a8002d8d0638b29",
-    strip_prefix = "cmsis_device_f3-2.3.8",
+    sha256 = "b50e889b3f2bc3887dad13939ba06c1c3be6403802e624e8cc9a28bf5ddb5e04",
+    strip_prefix = "cmsis-device-f3-2.3.8",
     patch_cmds = [
          "for file in $(ls Source/Templates/gcc/*.s); do mv $file ${file/.s/.S}; done"
     ],
@@ -29,8 +29,8 @@ new_local_repository(
 http_archive(
     name = "stm32f3xx_hal",
     url = "https://github.com/STMicroelectronics/stm32f3xx_hal_driver/archive/refs/tags/v1.5.5.zip",
-    sha256 = "2ab773dc014e3b881be5ca04fa241c25c835c4c9429f796ea09c98142f23a3a4",
-    strip_prefix = "stm32f3xx_hal_driver-1.5.5",
+    sha256 = "57813ee58ec7bd5c49722943bc6e026d78b8d95b2f7c20a982c7ec3472d3275a",
+    strip_prefix = "stm32f3xx-hal-driver-1.5.5",
     build_file = "//third_party/stm32f3xx_hal:BUILD",
     patches = [
         "//third_party/stm32f3xx_hal:rcc_gpioe.patch",
