@@ -1,0 +1,31 @@
+mcu: stm32f303vctx
+peripherals:
+  - type: GPIO
+    port: GPIOE
+    pins:
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+    mode: OUTPUT_PP
+    pull: PULLDOWN
+    speed: FREQ_LOW
+
+  - type: USART
+    variant: USART2
+    name: CONSOLE_USART
+    pins:
+      TX: 0
+      RX: 0
+
+  - type: SPI
+    variant: SPI1
+    name: GYRO_SPI
+    pins:
+      SCK: 0
+      MISO: 0
+      MOSI: 0

@@ -1,0 +1,132 @@
+GPIO:
+  bus_interface: AHB
+  ports:
+  - GPIOA
+  - GPIOB
+  - GPIOC
+  - GPIOD
+  - GPIOE
+  - GPIOF
+
+USART:
+  USART1:
+    bus_interface: APB2
+    pins:
+      alternate_function: 7
+      TX:
+        - port: GPIOA
+          pin: 9
+        - port: GPIOB
+          pin: 6
+        - port: GPIOC
+          pin: 4
+        - port: GPIOE
+          pin: 0
+      RX:
+        - port: GPIOA
+          pin: 10
+        - port: GPIOB
+          pin: 7
+        - port: GPIOC
+          pin: 5
+        - port: GPIOE
+          pin: 1
+  USART2:
+    bus_interface: APB1
+    pins:
+      alternate_function: 7
+      TX:
+        - port: GPIOA
+          pin: 2
+        - port: GPIOA
+          pin: 14
+        - port: GPIOB
+          pin: 3
+        - port: GPIOD
+          pin: 5
+      RX:
+        - port: GPIOA
+          pin: 3
+        - port: GPIOA
+          pin: 15
+        - port: GPIOB
+          pin: 4
+        - port: GPIOD
+          pin: 6
+  USART3:
+    bus_interface: APB1
+    pins:
+      alternate_function: 7
+      TX:
+        - port: GPIOB
+          pin: 10
+        - port: GPIOC
+          pin: 10
+        - port: GPIOD
+          pin: 8
+      RX:
+        - port: GPIOB
+          pin: 11
+        - port: GPIOC
+          pin: 11
+        - port: GPIOD
+          pin: 9
+        - port: GPIOE
+          pin: 15
+
+SPI:
+  SPI1:
+    bus_interface: APB2
+    pins:
+      alternate_function: 5
+      SCK:
+        - port: GPIOA
+          pin: 5
+        - port: GPIOB
+          pin: 3
+      MISO:
+        - port: GPIOA
+          pin: 6
+        - port: GPIOB
+          pin: 4
+      MOSI:
+        - port: GPIOA
+          pin: 6
+        - port: GPIOB
+          pin: 5
+  SPI2:
+    bus_interface: APB1
+    pins:
+      alternate_function: 5
+      SCK:
+        - port: GPIOB
+          pin: 13
+        - port: GPIOF
+          pin: 9
+        - port: GPIOF
+          pin: 10
+      MISO:
+        - port: GPIOB
+          pin: 14
+      MOSI:
+        - port: GPIOB
+          pin: 15
+  SPI3:
+    bus_interface: APB1
+    pins:
+      alternate_function: 6
+      SCK:
+        - port: GPIOB
+          pin: 3
+        - port: GPIOC
+          pin: 10
+      MISO:
+        - port: GPIOB
+          pin: 4
+        - port: GPIOC
+          pin: 11
+      MOSI:
+        - port: GPIOB
+          pin: 5
+        - port: GPIOC
+          pin: 12
