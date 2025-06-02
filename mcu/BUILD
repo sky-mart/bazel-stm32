@@ -5,4 +5,8 @@ exports_files(["stm32f303vctx.yaml"])
 py_binary(
     name = "geninit",
     srcs = ["geninit.py"],
+    deps = [
+        "@pypi//jinja2",
+    ],
+    visibility = ["//visibility:public"],
 )
