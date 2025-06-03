@@ -17,14 +17,14 @@ peripherals:
 
   - type: USART
     variant: USART2
-    name: CONSOLE_USART
+    alias: CONSOLE_USART
     pins:
       TX: 0
       RX: 0
 
   - type: SPI
     variant: SPI1
-    name: GYRO_SPI
+    alias: GYRO_SPI
     pins:
       SCK: 0
       MISO: 0
