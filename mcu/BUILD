@@ -10,6 +10,7 @@ py_binary(
     srcs = ["geninit.py"],
     deps = [
         "@pypi//jinja2",
+        "@pypi//pyyaml",
     ],
     visibility = ["//visibility:public"],
 )

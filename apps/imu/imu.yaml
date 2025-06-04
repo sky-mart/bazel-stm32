@@ -1,7 +1,5 @@
-mcu: stm32f303vctx
-peripherals:
-  - type: GPIO
-    port: GPIOE
+gpio:
+  - port: GPIOE
     pins:
       - 8
       - 9
@@ -15,6 +13,7 @@ peripherals:
     pull: PULLDOWN
     speed: FREQ_LOW
 
+peripherals:
   - type: USART
     variant: USART2
     alias: CONSOLE_USART

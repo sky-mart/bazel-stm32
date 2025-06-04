@@ -11,8 +11,8 @@ GPIO:
 USART:
   USART1:
     bus_interface: APB2
+    alternate_function: 7
     pins:
-      alternate_function: 7
       TX:
         - port: GPIOA
           pin: 9
@@ -33,8 +33,8 @@ USART:
           pin: 1
   USART2:
     bus_interface: APB1
+    alternate_function: 7
     pins:
-      alternate_function: 7
       TX:
         - port: GPIOA
           pin: 2
@@ -55,8 +55,8 @@ USART:
           pin: 6
   USART3:
     bus_interface: APB1
+    alternate_function: 7
     pins:
-      alternate_function: 7
       TX:
         - port: GPIOB
           pin: 10
@@ -77,8 +77,8 @@ USART:
 SPI:
   SPI1:
     bus_interface: APB2
+    alternate_function: 5
     pins:
-      alternate_function: 5
       SCK:
         - port: GPIOA
           pin: 5
@@ -96,8 +96,8 @@ SPI:
           pin: 5
   SPI2:
     bus_interface: APB1
+    alternate_function: 5
     pins:
-      alternate_function: 5
       SCK:
         - port: GPIOB
           pin: 13
@@ -113,8 +113,8 @@ SPI:
           pin: 15
   SPI3:
     bus_interface: APB1
+    alternate_function: 6
     pins:
-      alternate_function: 6
       SCK:
         - port: GPIOB
           pin: 3
