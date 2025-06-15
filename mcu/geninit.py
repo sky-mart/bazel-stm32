@@ -1,8 +1,21 @@
 from jinja2 import Environment, FileSystemLoader
-from dataclasses import dataclass
+from dataclasses import dataclass, is_dataclass
 from pathlib import Path
 import sys
 import yaml
+
+def with_yaml_loader(cls):
+    if not is_dataclass(cls):
+        raise TypeError("Decorator can only be applied to dataclasses.")
+
+    @staticmethod
+    def from_yaml(path: Path) -> cls:
+        with open(path, 'r') as f:
+            data = yaml.safe_load(f)
+        return cls(**data)
+
+    cls.from_yaml = from_yaml
+    return cls
 
 @dataclass
 class PeripheralConfig:
@@ -18,6 +31,12 @@ class GpioConfig:
     mode: str
     pull: str
     speed: str
+
+@with_yaml_loader
+@dataclass
+class Project:
+    gpio: list[GpioConfig]
+    peripherals: list[PeripheralConfig]
 
 
 @dataclass
@@ -39,35 +58,38 @@ class PeripheralVariant:
     pins: dict[str, list[GpioPin]]
 
 
-def project_configs(project_file: Path) -> (list[PeripheralConfig], list[GpioConfig]):
-    with project_file.open("r") as f:
-        project = yaml.safe_load(f)
+class Peripheral:
+    def __init__(self, variants) -> None:
+        self.variants = {}
+        for name, variant in variants.items():
+            self.variants[name] = PeripheralVariant(**variant)
 
-    return [PeripheralConfig(**peripheral) for peripheral in project["peripherals"]], [GpioConfig(**gpio) for gpio in project["gpio"]]
 
+class Mcu:
+    def __init__(self, mcu_file: Path) -> None:
+        with open(mcu_file, 'r') as f:
+            peripherals = yaml.safe_load(f)
 
-def mcu_descr(mcu_file: Path):
-    with mcu_file.open("r") as f:
-        mcu = yaml.safe_load(f)
+        self.peripherals = {}
+        for type, peripheral in peripherals.items():
+            if type == "GPIO":
+                self.peripherals[type] = Gpio(**peripheral)
+            else:
+                self.peripherals[type] = Peripheral(peripheral)
 
-    for peripheral_type in mcu:
-        if peripheral_type == "GPIO":
-            Gpio(**mcu[peripheral_type])
-        else:
-            for peripheral_variant in mcu[peripheral_type]:
-                PeripheralVariant(**mcu[peripheral_type][peripheral_variant])
 
 def main():
     project_file = sys.argv[1]
     mcu_file = sys.argv[2]
 
-    peripherals, gpio = project_configs(Path(project_file))
-    mcu_descr(Path(mcu_file))
+    # project = Project.from_yaml(Path(project_file))
+    mcu = Mcu(Path(mcu_file))
+    print(mcu.peripherals)
 
     env = Environment(loader=FileSystemLoader("mcu"))
     template = env.get_template("board.h.j2")
-    output = template.render(mcu_header = "stm32f303xc.h", peripherals=peripherals)
-    print(output)
+    # output = template.render(mcu_header = "stm32f303xc.h", peripherals=project.peripherals)
+    # print(output)
 
 
 if __name__ == '__main__':
