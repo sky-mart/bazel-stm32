@@ -82,14 +82,26 @@ def main():
     project_file = sys.argv[1]
     mcu_file = sys.argv[2]
 
-    # project = Project.from_yaml(Path(project_file))
     mcu = Mcu(Path(mcu_file))
-    print(mcu.peripherals)
+    project = Project.from_yaml(Path(project_file))
+
+    buses = {}
+    for p in project.peripherals:
+        # print(p)
+        var = p["variant"]
+        bus = mcu.peripherals[p["type"]].variants[var].bus_interface
+        if bus not in buses:
+            buses[bus] = []
+
+        buses[bus].append(f"RCC_{bus}ENR_{var}EN")
+
+    print(buses)
 
     env = Environment(loader=FileSystemLoader("mcu"))
     template = env.get_template("board.h.j2")
     # output = template.render(mcu_header = "stm32f303xc.h", peripherals=project.peripherals)
     # print(output)
+
 
 
 if __name__ == '__main__':
