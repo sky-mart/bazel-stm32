@@ -5,6 +5,7 @@ exports_files(["stm32f303vctx.yaml"])
 py_binary(
     name = "geninit",
     data = [
+        "board.cpp.j2",
         "board.h.j2",
     ],
     srcs = ["geninit.py"],

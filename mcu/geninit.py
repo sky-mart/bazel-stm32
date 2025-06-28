@@ -25,11 +25,12 @@ class PeripheralConfig:
         self.pins = pins
 
 class GpioConfig:
-    def __init__(self, port: str, mode: str, pull: str, speed: str, pins: set[str]) -> None:
+    def __init__(self, port: str, mode: str, pull: str, speed: str, pins: set[str], altfun = 0) -> None:
         self.port = port
         self.mode = mode
         self.pull = pull
         self.speed = speed
+        self.altfun = altfun
         self.pins = set(pins)
 
     def __repr__(self):
@@ -117,6 +118,9 @@ def squeeze(configs: list[GpioConfig]) -> list[GpioConfig]:
     return result
 
 
+def prefix_items(value, prefix):
+    return [f"{prefix}{item}" for item in value]
+
 def main():
     project_file = sys.argv[1]
     mcu_file = sys.argv[2]
@@ -147,15 +151,22 @@ def main():
             pin = pin_vars[p.pins[pin_name]]
             buses[gpio_bus].add(f"RCC_{gpio_bus}ENR_{pin.port}EN")
 
-            gpio_configs.append(GpioConfig(port=pin.port, pins=[pin.pin], mode="ALT", pull="UNK", speed="UNK"))
+            gpio_configs.append(GpioConfig(port=pin.port, pins=[pin.pin], mode="ALT", pull="UNK", speed="UNK", altfun=per_var.alternate_function))
 
-    print(buses)
-    print(squeeze(gpio_configs))
+    # print(buses)
+    # print(squeeze(gpio_configs))
 
     env = Environment(loader=FileSystemLoader("mcu"))
-    template = env.get_template("board.h.j2")
+    env.filters['prefix_items'] = prefix_items
+    # template = env.get_template("board.h.j2")
     # output = template.render(mcu_header = "stm32f303xc.h", peripherals=project.peripherals)
     # print(output)
+
+    print(env.list_templates())
+    template = env.get_template("board.cpp.j2")
+    output = template.render(buses=buses, gpio_configs=squeeze(gpio_configs))
+    print(output)
+
 
 
 

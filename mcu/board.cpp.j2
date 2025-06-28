@@ -1,0 +1,27 @@
+#include "board.h"
+
+namespace board {
+
+void init_clock()
+{
+    {% for bus, peripherals in buses.items() %}
+    RCC->{{ bus }}ENR = {{ " | ".join(peripherals) }};
+    {% endfor %}
+}
+
+void init_gpio()
+{
+    {% for gpio in gpio_configs %}
+    {
+        GPIO_InitTypeDef init{};
+        init.Pin = {{ gpio.pins | map("string") | prefix_items("GPIO_PIN_") | join(" | ") }};
+        init.Mode = {{ gpio.mode }};
+        init.Pull = {{ gpio.pull }};
+        init.Speed = {{ gpio.speed }};
+        {% if gpio.altfun > 0 %} init.Alternate = {{ gpio.altfun }}; {% endif %}
+        HAL_GPIO_Init({{ gpio.port }}, &init);
+    }
+    {% endfor %}
+}
+
+} // namespace board
