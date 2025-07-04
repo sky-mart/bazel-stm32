@@ -3,6 +3,7 @@ from dataclasses import dataclass, is_dataclass
 from pathlib import Path
 import sys
 import yaml
+import argparse
 
 def with_yaml_loader(cls):
     if not is_dataclass(cls):
@@ -122,11 +123,15 @@ def prefix_items(value, prefix):
     return [f"{prefix}{item}" for item in value]
 
 def main():
-    project_file = sys.argv[1]
-    mcu_file = sys.argv[2]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-m", "--mcu", type=str, help="The MCU description file")
+    parser.add_argument("-p", "--project", type=str, help="The Project description file")
+    parser.add_argument("-r", "--output-header", type=str, help="The output header file")
+    parser.add_argument("-s", "--output-source", type=str, help="The output source file")
+    args = parser.parse_args()
 
-    mcu = Mcu(Path(mcu_file))
-    project = Project(Path(project_file))
+    mcu = Mcu(Path(args.mcu))
+    project = Project(Path(args.project))
 
     gpio_configs = []
     buses = {}
@@ -151,21 +156,20 @@ def main():
             pin = pin_vars[p.pins[pin_name]]
             buses[gpio_bus].add(f"RCC_{gpio_bus}ENR_{pin.port}EN")
 
-            gpio_configs.append(GpioConfig(port=pin.port, pins=[pin.pin], mode="ALT", pull="UNK", speed="UNK", altfun=per_var.alternate_function))
-
-    # print(buses)
-    # print(squeeze(gpio_configs))
+            # TODO: specify mode, pull and speed in the project description
+            gpio_configs.append(GpioConfig(port=pin.port, pins=[pin.pin], mode="AF_PP", pull="NOPULL", speed="LOW", altfun=per_var.alternate_function))
 
     env = Environment(loader=FileSystemLoader("mcu"))
-    env.filters['prefix_items'] = prefix_items
-    # template = env.get_template("board.h.j2")
-    # output = template.render(mcu_header = "stm32f303xc.h", peripherals=project.peripherals)
-    # print(output)
-
     print(env.list_templates())
+    env.filters['prefix_items'] = prefix_items
+
+    template = env.get_template("board.h.j2")
+    output = template.render(mcu_header = "stm32f303xc", peripherals=project.peripherals)
+    Path(args.output_header).write_text(output)
+
     template = env.get_template("board.cpp.j2")
     output = template.render(buses=buses, gpio_configs=squeeze(gpio_configs))
-    print(output)
+    Path(args.output_source).write_text(output)
 
 
 

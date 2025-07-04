@@ -43,3 +43,39 @@ debug_stm32(
     name = "debug",
     elf = ":elf",
 )
+
+exports_files(["imu.yaml"])
+
+genrule(
+    name = "genboard",
+    srcs = [
+        ":imu.yaml",
+        "//mcu:stm32f303vctx.yaml",
+        "//mcu:board.h.j2",
+        "//mcu:board.cpp.j2",
+    ],
+    outs = [
+        "board_init.cpp",
+        "board_init.h",
+    ],
+    cmd = "$(location //mcu:geninit) " +
+    "--mcu $(location //mcu:stm32f303vctx.yaml) " +
+    "--project $(location :imu.yaml) " +
+    "--output-header $(location board_init.h) " +
+    "--output-source $(location board_init.cpp) ",
+    tools = ["//mcu:geninit"],
+)
+
+cc_library(
+    name = "board_init",
+    srcs = [
+        "board_init.cpp",
+        "board_init.h",
+    ],
+    deps = [
+        ":genboard",
+        "@cmsis_device_f3",
+        "@cmsis//:core",
+        "@stm32f3xx_hal",
+    ],
+)

@@ -1,4 +1,6 @@
-#include "board.h"
+#include "board_init.h"
+
+#include "stm32f3xx_hal_gpio.h"
 
 namespace board {
 
@@ -15,9 +17,9 @@ void init_gpio()
     {
         GPIO_InitTypeDef init{};
         init.Pin = {{ gpio.pins | map("string") | prefix_items("GPIO_PIN_") | join(" | ") }};
-        init.Mode = {{ gpio.mode }};
-        init.Pull = {{ gpio.pull }};
-        init.Speed = {{ gpio.speed }};
+        init.Mode = GPIO_MODE_{{ gpio.mode }};
+        init.Pull = GPIO_{{ gpio.pull }};
+        init.Speed = GPIO_SPEED_{{ gpio.speed }};
         {% if gpio.altfun > 0 %} init.Alternate = {{ gpio.altfun }}; {% endif %}
         HAL_GPIO_Init({{ gpio.port }}, &init);
     }

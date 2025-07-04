@@ -1,6 +1,10 @@
 load("@rules_python//python:defs.bzl", "py_binary")
 
-exports_files(["stm32f303vctx.yaml"])
+exports_files([
+    "stm32f303vctx.yaml",
+    "board.h.j2",
+    "board.cpp.j2",
+])
 
 py_binary(
     name = "geninit",
