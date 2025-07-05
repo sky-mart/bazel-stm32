@@ -6,6 +6,7 @@
 #include "bsp/stm32f3discovery/board.h"
 #include "bsp/stm32f3discovery/gyroscope.h"
 #include "bsp/utility/utility.h"
+#include "apps/imu/board_init.h"
 
 using namespace mart;
 
@@ -28,12 +29,9 @@ int main()
 {
   HAL_Init();
 
-  __HAL_RCC_SPI1_CLK_ENABLE();
-  __HAL_RCC_USART2_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOE_CLK_ENABLE();
+  board::init_clock();
+  board::init_gpio();
 
-  leds.init_as_leds();
   gyro.init();
   uart.init(stm32f3discovery::uart_pins(USART2), 115200U);
 

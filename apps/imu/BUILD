@@ -16,6 +16,7 @@ stm32f3_binary(
         "@cmsis_device_f3",
         "@cmsis//:core",
         "@stm32f3xx_hal",
+        ":board_init",
     ],
 )
 
