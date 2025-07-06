@@ -12,7 +12,7 @@ class UartDevice
 public:
   explicit UartDevice(USART_TypeDef& uart);
 
-  HAL_StatusTypeDef init(Pin uart_pins, u32 baudrate);
+  HAL_StatusTypeDef init(u32 baudrate);
 
   HAL_StatusTypeDef printf(const char* fmt, ...);
 

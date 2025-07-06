@@ -20,7 +20,7 @@ void init_gpio()
         init.Mode = GPIO_MODE_{{ gpio.mode }};
         init.Pull = GPIO_{{ gpio.pull }};
         init.Speed = GPIO_SPEED_{{ gpio.speed }};
-        {% if gpio.altfun > 0 %} init.Alternate = {{ gpio.altfun }}; {% endif %}
+        {% if gpio.altfun > 0 %}init.Alternate = {{ gpio.altfun }};{% endif %}
         HAL_GPIO_Init({{ gpio.port }}, &init);
     }
     {% endfor %}

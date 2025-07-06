@@ -11,20 +11,31 @@ gpio:
       - 15
     mode: OUTPUT_PP
     pull: PULLDOWN
-    speed: FREQ_LOW
+    speed: LOW
+  - port: GPIOE
+    pins:
+      - 3
+    mode: OUTPUT_PP
+    pull: PULLUP
+    speed: LOW
 
 peripherals:
   - type: USART
     variant: USART2
     alias: CONSOLE_USART
     pins:
-      TX: 0
-      RX: 0
+      TX:
+        variant: 0
+      RX:
+        variant: 0
 
   - type: SPI
     variant: SPI1
     alias: GYRO_SPI
     pins:
-      SCK: 0
-      MISO: 0
-      MOSI: 0
+      SCK:
+        variant: 0
+      MISO:
+        variant: 0
+      MOSI:
+        variant: 0

@@ -6,10 +6,8 @@ namespace mart {
 
 UartDevice::UartDevice(USART_TypeDef &uart) { handle_.Instance = &uart; }
 
-HAL_StatusTypeDef UartDevice::init(Pin uart_pins, u32 baudrate)
+HAL_StatusTypeDef UartDevice::init(u32 baudrate)
 {
-  uart_pins.init(GPIO_MODE_AF_PP, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, GPIO_AF7_USART2);
-
   handle_.Init.BaudRate = baudrate;
   handle_.Init.WordLength = UART_WORDLENGTH_8B;
   handle_.Init.StopBits = UART_STOPBITS_1;

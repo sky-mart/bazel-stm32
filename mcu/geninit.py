@@ -35,7 +35,7 @@ class GpioConfig:
         self.pins = set(pins)
 
     def __repr__(self):
-        return f"GpioConfig(port: {self.port}, mode: {self.mode}, pull: {self.pull}, speed: {self.speed}, pins: {list(self.pins)}"
+        return f"GpioConfig(port: {self.port}, mode: {self.mode}, pull: {self.pull}, speed: {self.speed}, pins: {list(self.pins)}, altfun: {self.altfun}"
 
 class Project:
     def __init__(self, proj_file: Path) -> None:
@@ -95,7 +95,6 @@ class Mcu:
 def squeeze(configs: list[GpioConfig]) -> list[GpioConfig]:
     sorted = {}
     for c in configs:
-        # print(c)
         if c.port not in sorted:
             sorted[c.port] = {}
 
@@ -106,16 +105,20 @@ def squeeze(configs: list[GpioConfig]) -> list[GpioConfig]:
             sorted[c.port][c.mode][c.pull] = {}
 
         if c.speed not in sorted[c.port][c.mode][c.pull]:
-            sorted[c.port][c.mode][c.pull][c.speed] = set()
+            sorted[c.port][c.mode][c.pull][c.speed] = {}
 
-        sorted[c.port][c.mode][c.pull][c.speed].update(c.pins)
+        if c.altfun not in sorted[c.port][c.mode][c.pull][c.speed]:
+            sorted[c.port][c.mode][c.pull][c.speed][c.altfun] = set()
+
+        sorted[c.port][c.mode][c.pull][c.speed][c.altfun].update(c.pins)
 
     result = []
     for port, configs_by_mode in sorted.items():
         for mode, configs_by_pull in configs_by_mode.items():
             for pull, configs_by_speed in configs_by_pull.items():
-                for speed, pins in configs_by_speed.items():
-                    result.append(GpioConfig(port, mode, pull, speed, pins))
+                for speed, configs_by_altfun in configs_by_speed.items():
+                    for altfun, pins in configs_by_altfun.items():
+                        result.append(GpioConfig(port, mode, pull, speed, pins, altfun))
     return result
 
 
@@ -153,14 +156,13 @@ def main():
         buses[bus].add(f"RCC_{bus}ENR_{var}EN")
 
         for pin_name, pin_vars in per_var.pins.items():
-            pin = pin_vars[p.pins[pin_name]]
+            pin = pin_vars[p.pins[pin_name]["variant"]]
             buses[gpio_bus].add(f"RCC_{gpio_bus}ENR_{pin.port}EN")
 
             # TODO: specify mode, pull and speed in the project description
-            gpio_configs.append(GpioConfig(port=pin.port, pins=[pin.pin], mode="AF_PP", pull="NOPULL", speed="LOW", altfun=per_var.alternate_function))
+            gpio_configs.append(GpioConfig(port=pin.port, pins=[pin.pin], mode="AF_PP", pull="NOPULL", speed="HIGH", altfun=per_var.alternate_function))
 
     env = Environment(loader=FileSystemLoader("mcu"))
-    print(env.list_templates())
     env.filters['prefix_items'] = prefix_items
 
     template = env.get_template("board.h.j2")
