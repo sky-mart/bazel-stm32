@@ -91,7 +91,7 @@ SPI:
           pin: 4
       MOSI:
         - port: GPIOA
-          pin: 6
+          pin: 7
         - port: GPIOB
           pin: 5
   SPI2:
