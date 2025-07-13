@@ -18,6 +18,7 @@ gpio:
     mode: OUTPUT_PP
     pull: PULLUP
     speed: LOW
+    alias: GYRO_CS_PIN
 
 peripherals:
   - type: USART

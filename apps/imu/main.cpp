@@ -11,7 +11,7 @@
 using namespace mart;
 
 auto leds = stm32f3discovery::leds();
-stm32f3discovery::Gyroscope gyro{};
+stm32f3discovery::Gyroscope gyro{*GYRO_SPI, GYRO_CS_PIN};
 UartDevice uart{*CONSOLE_USART};
 
 void assert(const bool statement)

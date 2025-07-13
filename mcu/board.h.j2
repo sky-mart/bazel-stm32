@@ -1,12 +1,16 @@
 #pragma once
 
-#include "{{ mcu_header }}.h"
+#include "bsp/pin/pin.h"
+#include "{{ mcu_header }}"
 
 namespace board {
 
 void init_clock();
 
 void init_gpio();
+{% for gpio in gpio_configs %}
+{% if gpio.alias %}#define {{ gpio.alias }} mart::Pin(*{{ gpio.port }}, {{ gpio.pins | map("string") | prefix_items("GPIO_PIN_") | join(" | ") }}){% endif %}
+{% endfor %}
 {% for peripheral in peripherals %}
 #define {{ peripheral.alias }} {{ peripheral.variant }}
 {% endfor %}

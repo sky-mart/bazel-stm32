@@ -87,15 +87,22 @@ class Mcu:
 
         self.peripherals = {}
         for type, peripheral in peripherals.items():
-            if type == "GPIO":
+            if type == "mcu_header":
+                self.mcu_header = peripheral
+            elif type == "GPIO":
                 self.peripherals[type] = Gpio(**peripheral)
             else:
                 self.peripherals[type] = Peripheral(peripheral)
 
 
 def squeeze(configs: list[GpioConfig]) -> list[GpioConfig]:
+    result = []
     sorted = {}
     for c in configs:
+        if c.alias is not None:
+            result.append(c)
+            continue
+
         if c.port not in sorted:
             sorted[c.port] = {}
 
@@ -113,7 +120,6 @@ def squeeze(configs: list[GpioConfig]) -> list[GpioConfig]:
 
         sorted[c.port][c.mode][c.pull][c.speed][c.altfun].update(c.pins)
 
-    result = []
     for port, configs_by_mode in sorted.items():
         for mode, configs_by_pull in configs_by_mode.items():
             for pull, configs_by_speed in configs_by_pull.items():
@@ -173,7 +179,7 @@ def main():
     env.filters['postfix_items'] = postfix_items
 
     template = env.get_template("board.h.j2")
-    output = template.render(mcu_header = "stm32f303xc", gpio_configs=gpio_configs, peripherals=project.peripherals)
+    output = template.render(mcu_header = mcu.mcu_header, gpio_configs=gpio_configs, peripherals=project.peripherals)
     Path(args.output_header).write_text(output)
 
     template = env.get_template("board.cpp.j2")

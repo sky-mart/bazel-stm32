@@ -75,6 +75,7 @@ cc_library(
     ],
     deps = [
         ":genboard",
+        "//bsp/pin",
         "@cmsis_device_f3",
         "@cmsis//:core",
         "@stm32f3xx_hal",

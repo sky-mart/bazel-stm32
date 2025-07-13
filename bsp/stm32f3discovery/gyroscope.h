@@ -1,6 +1,7 @@
 #pragma once
 
 #include "bsp/spi/spi_device.h"
+#include "bsp/pin/pin.h"
 #include "std_ext/types.h"
 
 namespace stm32f3discovery {
@@ -38,7 +39,7 @@ public:
     INT1_DURATION = 0x38U,
   };
 
-  Gyroscope();
+  Gyroscope(SPI_TypeDef& spi, mart::Pin cs_pin);
 
   HAL_StatusTypeDef init();
 
