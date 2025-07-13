@@ -26,16 +26,17 @@ class PeripheralConfig:
         self.pins = pins
 
 class GpioConfig:
-    def __init__(self, port: str, mode: str, pull: str, speed: str, pins: set[str], altfun = 0) -> None:
+    def __init__(self, port: str, mode: str, pull: str, speed: str, pins: set[str], altfun: int = 0, alias: str | None = None) -> None:
         self.port = port
         self.mode = mode
         self.pull = pull
         self.speed = speed
         self.altfun = altfun
         self.pins = set(pins)
+        self.alias = alias
 
     def __repr__(self):
-        return f"GpioConfig(port: {self.port}, mode: {self.mode}, pull: {self.pull}, speed: {self.speed}, pins: {list(self.pins)}, altfun: {self.altfun}"
+        return f"GpioConfig(port: {self.port}, mode: {self.mode}, pull: {self.pull}, speed: {self.speed}, pins: {list(self.pins)}, altfun: {self.altfun}, alias: {self.alias}"
 
 class Project:
     def __init__(self, proj_file: Path) -> None:
@@ -125,6 +126,9 @@ def squeeze(configs: list[GpioConfig]) -> list[GpioConfig]:
 def prefix_items(value, prefix):
     return [f"{prefix}{item}" for item in value]
 
+def postfix_items(value, postfix):
+    return [f"{item}{postfix}" for item in value]
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-m", "--mcu", type=str, help="The MCU description file")
@@ -143,7 +147,7 @@ def main():
         buses[gpio_bus] = set()
 
     for g in project.gpio:
-        buses[gpio_bus].add(f"RCC_{gpio_bus}ENR_{g.port}EN")
+        buses[gpio_bus].add(g.port)
 
     gpio_configs += project.gpio
 
@@ -153,24 +157,27 @@ def main():
         bus = per_var.bus_interface
         if bus not in buses:
             buses[bus] = set()
-        buses[bus].add(f"RCC_{bus}ENR_{var}EN")
+        buses[bus].add(var)
 
         for pin_name, pin_vars in per_var.pins.items():
             pin = pin_vars[p.pins[pin_name]["variant"]]
-            buses[gpio_bus].add(f"RCC_{gpio_bus}ENR_{pin.port}EN")
+            buses[gpio_bus].add(pin.port)
 
             # TODO: specify mode, pull and speed in the project description
             gpio_configs.append(GpioConfig(port=pin.port, pins=[pin.pin], mode="AF_PP", pull="NOPULL", speed="HIGH", altfun=per_var.alternate_function))
 
+    gpio_configs = squeeze(gpio_configs)
+
     env = Environment(loader=FileSystemLoader("mcu"))
     env.filters['prefix_items'] = prefix_items
+    env.filters['postfix_items'] = postfix_items
 
     template = env.get_template("board.h.j2")
-    output = template.render(mcu_header = "stm32f303xc", peripherals=project.peripherals)
+    output = template.render(mcu_header = "stm32f303xc", gpio_configs=gpio_configs, peripherals=project.peripherals)
     Path(args.output_header).write_text(output)
 
     template = env.get_template("board.cpp.j2")
-    output = template.render(buses=buses, gpio_configs=squeeze(gpio_configs))
+    output = template.render(buses=buses, gpio_configs=gpio_configs)
     Path(args.output_source).write_text(output)
 
 

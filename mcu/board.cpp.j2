@@ -7,7 +7,7 @@ namespace board {
 void init_clock()
 {
     {% for bus, peripherals in buses.items() %}
-    RCC->{{ bus }}ENR = {{ " | ".join(peripherals) }};
+    RCC->{{ bus }}ENR = {{ peripherals | prefix_items("RCC_" + bus + "ENR_") | postfix_items("EN") | join(" | ") }};
     {% endfor %}
 }
 

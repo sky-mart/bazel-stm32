@@ -40,9 +40,9 @@ int main()
 
   while (true)
   {
-    // const auto whoami = gyro.read(stm32f3discovery::Gyroscope::Register::WHO_AM_I);
-    // assert(whoami.has_value());
-    // assert(whoami.value() == 0xD4U);
+    const auto whoami = gyro.read(stm32f3discovery::Gyroscope::Register::WHO_AM_I);
+    assert(whoami.has_value());
+    assert(whoami.value() == 0xD4U);
 
     const auto current_ms = ms_since_startup();
     assert(uart.printf("%04u: Initialization is successful\r\n", current_ms) == HAL_OK);
