@@ -132,3 +132,37 @@ SPI:
           pin: 5
         - port: GPIOC
           pin: 12
+
+I2C:
+  I2C1:
+    bus_interface: APB1
+    alternate_function: 4
+    pins:
+      SDA:
+        - port: GPIOA
+          pin: 14
+        - port: GPIOB
+          pin: 7
+        - port: GPIOB
+          pin: 9
+      SCL:
+        - port: GPIOA
+          pin: 15
+        - port: GPIOB
+          pin: 6
+        - port: GPIOB
+          pin: 8
+  I2C2:
+    bus_interface: APB1
+    alternate_function: 4
+    pins:
+      SDA:
+        - port: GPIOA
+          pin: 10
+        - port: GPIOF
+          pin: 0
+      SCL:
+        - port: GPIOA
+          pin: 9
+        - port: GPIOF
+          pin: 1
