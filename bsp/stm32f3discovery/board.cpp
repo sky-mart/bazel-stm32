@@ -18,18 +18,4 @@ mart::PinArray<8U> leds()
   };
 }
 
-mart::Pin spi_pins(SPI_TypeDef* /*spi*/)
-{
-  // TODO: handle errors
-  // if (spi == SPI1)
-  // {
-    return mart::Pin{*GPIOA, GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7};
-  // }
-}
-
-mart::Pin uart_pins(USART_TypeDef* /*uart*/)
-{
-  return mart::Pin{*GPIOA, GPIO_PIN_2 | GPIO_PIN_3};
-}
-
 }

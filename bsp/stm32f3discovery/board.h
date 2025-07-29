@@ -7,8 +7,4 @@ namespace stm32f3discovery {
 
 mart::PinArray<8U> leds();
 
-mart::Pin spi_pins(SPI_TypeDef* spi);
-
-mart::Pin uart_pins(USART_TypeDef* uart);
-
 }

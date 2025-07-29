@@ -1,9 +1,14 @@
 from jinja2 import Environment, FileSystemLoader
+from collections import defaultdict
 from dataclasses import dataclass, is_dataclass
 from pathlib import Path
 import sys
 import yaml
 import argparse
+
+DEFAULT_GPIO_MODE = "AF_PP"
+DEFAULT_GPIO_PULL = "NOPULL"
+DEFAULT_GPIO_SPEED = "HIGH"
 
 def with_yaml_loader(cls):
     if not is_dataclass(cls):
@@ -25,18 +30,23 @@ class PeripheralConfig:
         self.type = type
         self.pins = pins
 
+@dataclass
 class GpioConfig:
-    def __init__(self, port: str, mode: str, pull: str, speed: str, pins: set[str], altfun: int = 0, alias: str | None = None) -> None:
-        self.port = port
-        self.mode = mode
-        self.pull = pull
-        self.speed = speed
-        self.altfun = altfun
-        self.pins = set(pins)
-        self.alias = alias
+    port: str
+    pins: set[int]
+    mode: str = DEFAULT_GPIO_MODE
+    pull: str = DEFAULT_GPIO_PULL
+    speed: str = DEFAULT_GPIO_SPEED
+    altfun: int = 0
+    alias: str | None = None
+    pin_array: bool = False
 
-    def __repr__(self):
-        return f"GpioConfig(port: {self.port}, mode: {self.mode}, pull: {self.pull}, speed: {self.speed}, pins: {list(self.pins)}, altfun: {self.altfun}, alias: {self.alias}"
+    def __post_init__(self):
+        self.pins = set(self.pins)
+
+    def key(self):
+        # Used for grouping: ignore `pins`
+        return (self.port, self.mode, self.pull, self.speed, self.altfun, self.alias, self.pin_array)
 
 class Project:
     def __init__(self, proj_file: Path) -> None:
@@ -96,37 +106,16 @@ class Mcu:
 
 
 def squeeze(configs: list[GpioConfig]) -> list[GpioConfig]:
-    result = []
-    sorted = {}
+    merged_dict = defaultdict(lambda: None)
+
     for c in configs:
-        if c.alias is not None:
-            result.append(c)
-            continue
+        k = c.key()
+        if merged_dict[k] is None:
+            merged_dict[k] = c
+    else:
+        merged_dict[k].pins.update(c.pins)
 
-        if c.port not in sorted:
-            sorted[c.port] = {}
-
-        if c.mode not in sorted[c.port]:
-            sorted[c.port][c.mode] = {}
-
-        if c.pull not in sorted[c.port][c.mode]:
-            sorted[c.port][c.mode][c.pull] = {}
-
-        if c.speed not in sorted[c.port][c.mode][c.pull]:
-            sorted[c.port][c.mode][c.pull][c.speed] = {}
-
-        if c.altfun not in sorted[c.port][c.mode][c.pull][c.speed]:
-            sorted[c.port][c.mode][c.pull][c.speed][c.altfun] = set()
-
-        sorted[c.port][c.mode][c.pull][c.speed][c.altfun].update(c.pins)
-
-    for port, configs_by_mode in sorted.items():
-        for mode, configs_by_pull in configs_by_mode.items():
-            for pull, configs_by_speed in configs_by_pull.items():
-                for speed, configs_by_altfun in configs_by_speed.items():
-                    for altfun, pins in configs_by_altfun.items():
-                        result.append(GpioConfig(port, mode, pull, speed, pins, altfun))
-    return result
+    return list(merged_dict.values())
 
 
 def prefix_items(value, prefix):
@@ -169,8 +158,7 @@ def main():
             pin = pin_vars[p.pins[pin_name]["variant"]]
             buses[gpio_bus].add(pin.port)
 
-            # TODO: specify mode, pull and speed in the project description
-            gpio_configs.append(GpioConfig(port=pin.port, pins=[pin.pin], mode="AF_PP", pull="NOPULL", speed="HIGH", altfun=per_var.alternate_function))
+            gpio_configs.append(GpioConfig(port=pin.port, pins=[pin.pin], altfun=per_var.alternate_function))
 
     gpio_configs = squeeze(gpio_configs)
 
